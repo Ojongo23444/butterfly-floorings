@@ -1177,16 +1177,16 @@
   <div class="contact-form fade-up">
     <div class="form-title">Send a Message</div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" placeholder="John"></div>
-      <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" placeholder="Smith"></div>
+      <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-input" name="first_name" id="first_name" placeholder="John" required></div>
+      <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-input" name="last_name" id="last_name" placeholder="Smith"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" placeholder="226-829-8485"></div>
-      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="you@email.com"></div>
+      <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" name="phone" id="phone" placeholder="226-829-8485"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" name="email" id="email" placeholder="you@email.com" required></div>
     </div>
     <div class="form-group">
       <label class="form-label">Service of Interest</label>
-      <select class="form-select">
+      <select class="form-select" name="service" id="service">
         <option value="">Select a service...</option>
         <option>Concrete Polishing</option>
         <option>Epoxy Flooring</option>
@@ -1198,7 +1198,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Project Details</label>
-      <textarea class="form-textarea" placeholder="Tell us about your project — size, location, timeline, or any questions..."></textarea>
+      <textarea class="form-textarea" name="message" id="message" placeholder="Tell us about your project — size, location, timeline, or any questions..."></textarea>
     </div>
     <button class="form-submit">Send Message →</button>
   </div>
@@ -1297,38 +1297,67 @@
 
   // Web3Forms contact form handler
   const contactBtn = document.querySelector('.form-submit');
+  const contactForm = document.querySelector('.contact-form');
+
+  function showFormError(msg) {
+    let err = document.getElementById('form-error');
+    if (!err) {
+      err = document.createElement('p');
+      err.id = 'form-error';
+      err.style.cssText = 'color:#ff4d4d;font-size:0.88rem;margin-top:12px;text-align:center;font-family:Inter,sans-serif;';
+      contactBtn.insertAdjacentElement('afterend', err);
+    }
+    err.textContent = msg;
+  }
+
   if (contactBtn) {
     contactBtn.addEventListener('click', async function(e) {
       e.preventDefault();
-      const section = document.querySelector('#contact');
-      const firstName = section.querySelector('input[placeholder="John"]')?.value || '';
-      const lastName  = section.querySelector('input[placeholder="Smith"]')?.value || '';
-      const phone     = section.querySelector('input[type="tel"]')?.value || '';
-      const email     = section.querySelector('input[type="email"]')?.value || '';
-      const service   = section.querySelector('.form-select')?.value || '';
-      const details   = section.querySelector('.form-textarea')?.value || '';
 
-      if (!firstName || !email) {
-        alert('Please fill in at least your name and email.');
-        return;
-      }
+      const firstName = (document.getElementById('first_name')?.value || '').trim();
+      const lastName  = (document.getElementById('last_name')?.value  || '').trim();
+      const phone     = (document.getElementById('phone')?.value      || '').trim();
+      const email     = (document.getElementById('email')?.value      || '').trim();
+      const service   = (document.getElementById('service')?.value    || '').trim();
+      const message   = (document.getElementById('message')?.value    || '').trim();
+
+      if (!firstName) { showFormError('Please enter your first name.'); return; }
+      if (!email || !email.includes('@')) { showFormError('Please enter a valid email address.'); return; }
 
       const formData = new FormData();
-      formData.append('access_key', '0337485c-6c56-43cc-9408-53b46c760864');
-      formData.append('subject', 'New Enquiry — Butterfly Floorings');
-      formData.append('name', firstName + ' ' + lastName);
-      formData.append('phone', phone);
-      formData.append('email', email);
-      formData.append('service', service);
-      formData.append('message', details);
+      formData.append('access_key',     '0337485c-6c56-43cc-9408-53b46c760864');
+      formData.append('subject',        'New Enquiry — Butterfly Floorings');
+      formData.append('from_name',      'Butterfly Floorings Website');
+      formData.append('name',           firstName + (lastName ? ' ' + lastName : ''));
+      formData.append('email',          email);
+      formData.append('phone',          phone);
+      formData.append('service',        service);
+      formData.append('message',        message || 'No details provided.');
+      formData.append('redirect',       'false');
 
       contactBtn.textContent = 'Sending…';
       contactBtn.disabled = true;
+      const errEl = document.getElementById('form-error');
+      if (errEl) errEl.textContent = '';
 
       try {
-        const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        });
         const result = await res.json();
+
         if (result.success) {
-          document.querySelector('.contact-form').innerHTML = '<p style="color:#1e90ff;font-size:1.1rem;text-align:center;padding:60px 20px;font-family:Barlow Condensed,sans-serif;letter-spacing:1px;">✅ Thank you! We\'ll be in touch within 24 hours.</p>';
+          contactForm.innerHTML = '<p style="color:#1e90ff;font-size:1.1rem;text-align:center;padding:60px 20px;font-family:Barlow Condensed,sans-serif;letter-spacing:1px;">✅ Thank you! We will be in touch within 24 hours.</p>';
         } else {
-          alert(
+          contactBtn.textContent = 'Send Message →';
+          contactBtn.disabled = false;
+          showFormError('Something went wrong: ' + (result.message || 'Please try again.'));
+        }
+      } catch (err) {
+        contactBtn.textContent = 'Send Message →';
+        contactBtn.disabled = false;
+        showFormError('Network error — please check your connection and try again.');
+      }
+    });
+  }(
