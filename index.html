@@ -1289,6 +1289,17 @@
     }
   });
 
+  // Force all #contact anchor links to scroll to section (bypass any link rewriting)
+  document.querySelectorAll('a[href="#contact"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.getElementById('contact');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
   // Sticky nav shrink on scroll
   const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
@@ -1360,4 +1371,8 @@
         showFormError('Network error — please check your connection and try again.');
       }
     });
-  }(
+  }
+
+</script>
+</body>
+</html>
