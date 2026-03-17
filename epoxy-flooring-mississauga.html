@@ -30,13 +30,25 @@
   "url": "https://www.butterflyfloorings.com",
   "telephone": "+1-226-829-8485",
   "email": "contact@butterflyfloorings.com",
-  "address": {"@type":"PostalAddress","addressLocality":"Mississauga","addressRegion":"ON","addressCountry":"CA"},
+  "sameAs": ["https://share.google/t0wLO1r8lREVmOrjX"],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Mississauga",
+    "addressRegion": "ON",
+    "addressCountry": "CA"
+  },
   "areaServed": ["Mississauga","Toronto","Brampton","Oakville","Burlington","Etobicoke","Vaughan","Scarborough"],
   "priceRange": "$$",
   "description": "Professional epoxy flooring installation in Mississauga and GTA. Garage epoxy, commercial epoxy, and industrial floor coatings.",
-  "@type": "LocalBusiness",
-  "name": "Butterfly Floorings",
-  "hasOfferCatalog": {{"@type":"OfferCatalog","name":"Epoxy Flooring Services","itemListElement":[{{"@type":"Offer","itemOffered":{{"@type":"Service","name":"Garage Epoxy Flooring Mississauga"}}}},{{"@type":"Offer","itemOffered":{{"@type":"Service","name":"Commercial Epoxy Flooring Toronto"}}}},{{"@type":"Offer","itemOffered":{{"@type":"Service","name":"Industrial Epoxy Coatings GTA"}}}}]}}
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Epoxy Flooring Services",
+    "itemListElement": [
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Garage Epoxy Flooring Mississauga"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Commercial Epoxy Flooring Toronto"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Industrial Epoxy Coatings GTA"}}
+    ]
+  }
 }
 </script>
 <style>
@@ -1064,7 +1076,8 @@
   </a>
   <ul class="nav-links">
     <li><a href="/index.html#services">Services</a></li>
-    <li><a href="/epoxy-flooring-mississauga.html">Epoxy</a></li>
+    <li><a href="/epoxy-flooring-mississauga.html">Epoxy Mississauga</a></li>
+    <li><a href="/epoxy-flooring-toronto.html">Epoxy Toronto</a></li>
     <li><a href="/concrete-polishing-toronto.html">Polishing</a></li>
     <li><a href="/gallery.html">Gallery</a></li>
     <li><a href="/index.html#testimonials">Reviews</a></li>
@@ -1247,7 +1260,8 @@
       <div class="footer-col-title">Services</div>
       <ul class="footer-links">
         <li><a href="/concrete-polishing-toronto.html">Concrete Polishing</a></li>
-        <li><a href="/epoxy-flooring-mississauga.html">Epoxy Flooring</a></li>
+        <li><a href="/epoxy-flooring-toronto.html">Epoxy Flooring Toronto</a></li>
+        <li><a href="/epoxy-flooring-mississauga.html">Epoxy Flooring Mississauga</a></li>
         <li><a href="/index.html#services">Concrete Grinding</a></li>
         <li><a href="/index.html#services">Floor Leveling</a></li>
         <li><a href="/index.html#services">Demolition &amp; Removal</a></li>
@@ -1267,7 +1281,7 @@
       <div class="footer-col-title">Contact</div>
       <ul class="footer-links">
         <li><a href="tel:2268298485">226-829-8485</a></li>
-        <li><a href="/cdn-cgi/l/email-protection#43202c2d3722203703213637372631252f3a252f2c2c312a2d24306d202c2e"><span class="__cf_email__" data-cfemail="86e5e9e8f2e7e5f2c6e4f3f2f2e3f4e0eaffe0eae9e9f4efe8e1f5a8e5e9eb">[email&#160;protected]</span></a></li>
+        <li><a href="mailto:contact@butterflyfloorings.com">contact@butterflyfloorings.com</a></li>
         <li><a href="https://www.butterflyfloorings.com">www.butterflyfloorings.com</a></li>
         <li>Greater Toronto Area</li>
       </ul>
@@ -1278,7 +1292,7 @@
     <span class="footer-copy">Floors that outlast the moment.</span>
   </div>
 </footer>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 
   // Scroll fade-up animations
   const fadeEls = document.querySelectorAll('.fade-up');
@@ -1396,4 +1410,37 @@
         } else {
           contactBtn.textContent = 'Send Message →';
           contactBtn.disabled = false;
-          showFormError('Something went wrong: ' + (result.message || 'Please try aga
+          showFormError('Something went wrong: ' + (result.message || 'Please try again.'));
+        }
+      } catch (err) {
+        showFormError('Network error. Please check your connection and try again.');
+        contactBtn.textContent = 'Send Message →';
+        contactBtn.disabled = false;
+      }
+    });
+  }
+
+  // Scroll fade-up IntersectionObserver
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Nav scroll shrink
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      nav.style.padding = '12px 60px';
+    } else {
+      nav.style.padding = '20px 60px';
+    }
+  });
+</script>
+</body>
+</html>
